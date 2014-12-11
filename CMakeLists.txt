@@ -8,7 +8,6 @@ ADD_DEFINITIONS(
 
 file(GLOB SOURCES
   "src/*.cpp"
-  #"src/*.hh"
   )
 
 add_executable(clecta ${SOURCES})
