@@ -1,6 +1,6 @@
 # clecta
 
-This a yet another port of garybernhardt/selecta in C++ using Ncurses for the 
+This a yet another port of [garybernhardt/selecta](https://github.com/garybernhardt/selecta) in C++ using Ncurses for the 
 terminal windows. UTF-8 is support.
 
 ### Keys
@@ -8,7 +8,7 @@ terminal windows. UTF-8 is support.
 * `End` go to the beginning match list
 
 ### Not done yet
-* the fuzzy finding is not done yet. Currently, it only searches for the given
+* fuzzy finding; currently, it only searches for the given
 query-string over all choices.
 * some unit testing 
 * more keybindings like `^D` and `^U` (see [selecta](https://github.com/garybernhardt/selecta) for more bindings)
