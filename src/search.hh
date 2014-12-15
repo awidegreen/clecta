@@ -8,32 +8,52 @@ namespace clecta
 class Search
 {
 public:
-  typedef std::list<std::wstring> Choices;
-  typedef std::vector<std::wstring> Matches;
+  typedef std::wstring String;
 
-  Search();
-  Search(const Choices& choices);
+  /**
+   * Score value is dynamitic where 0 is the worst!
+   */
+  struct Match {
+    float score;
+    size_t begin;
+    size_t end;
+    String value;
+  };
 
-  void max_matches(unsigned size) { _max_matches = size; }
+  typedef std::list<String> Choices;
+  typedef std::vector<Match> Matches;
 
-  void query(const std::wstring& term);
+  Search(bool case_insensitive = false);
+  Search(const Choices& choices, bool case_insensitive = false);
 
-  void add_choice(const std::wstring s) { _choices.push_back(s); }
+  /**
+   * get the score for every choice based on query term
+   * note, copy needed because it will be put to lower internally 
+   */
+  void query(String term);
+
+  void add_choice(const String& s) { _choices.push_back(s); }
 
   void selected(int s) { _selected = s; }
   int selected() const { return _selected; }
-  std::wstring selection() const;
+  String selection() const;
   
   size_t size_choices() const;
+
+  void toggle_case_sensitive() { _case_insensitive = !_case_insensitive; }
+  bool case_insensitive() const { return _case_insensitive; }
+
   /**
    * Returns sorted list of choices which match best to the query.
    */
   const Matches& matches() const { return _matches; };
 private:
+  Search::Match get_score(const Search::String& query, Search::String candidate) const;
+
   Choices _choices;
   Matches _matches;
-  unsigned _max_matches;
   int _selected;
+  bool _case_insensitive;
 };
 
 } // ns

@@ -13,11 +13,11 @@ public:
     _parent(parent), _search(search) { }
   virtual ~ClectaWin() {}
 
-  virtual void init() = 0;
   virtual void handle(int key) = 0;
   virtual void draw() = 0;
   virtual WINDOW* curses_win() { return NULL; }
 protected:
+  virtual void init() = 0;
   WINDOW* _parent;
   Search* _search;
 };
@@ -34,12 +34,12 @@ public:
     _height(height)
   { init(); }
 
-  void init();
   void handle(int key);
   void draw();
   virtual WINDOW* curses_win() { return _win; }
 
 private:
+  void init();
   WINDOW* _win;
   unsigned _height;
   std::wstring _in;
@@ -55,15 +55,17 @@ public:
   ListWindow(WINDOW* p, Search* search, unsigned h_space = 1) : 
     ClectaWin(p, search),
     _h_space(h_space),
-    _selected_row(-1)
+    _selected_row(-1),
+    _max_visible(0)
   { init(); }
 
-  void init();
   void handle(int key);
   void draw();
 private:
+  void init();
   unsigned _h_space;
   int _selected_row;
+  int _max_visible;
   WINDOW* _win;
 };
 
@@ -79,10 +81,10 @@ public:
     _height(height)
   { init(); }
 
-  void init();
   void handle(int /* key */);
   void draw();
 private:
+  void init();
   unsigned _height;
   unsigned _nb_choices;
   WINDOW* _win;

@@ -43,22 +43,17 @@ App::init()
 
 
   init_pair(1, COLOR_WHITE, COLOR_BLUE);
+  init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 
   curs_set(0);
   noecho(); // let me print chars myself
   cbreak(); // let me handle new line etc, execpt C-c et. al.
 
+  _search->query(L"");
+
   _inputw = new clecta::InputWindow(stdscr, _search, 1);
   _statusw = new clecta::StatusWindow(stdscr, _search, 1);
   _listw = new clecta::ListWindow(stdscr, _search, 2);
-
-  auto max_y = getmaxy(stdscr);
-  _search->max_matches(max_y);
-
-  _inputw->init();
-  _statusw->init();
-  _listw->init();
-
 }
 
 //------------------------------------------------------------------------------
@@ -102,6 +97,9 @@ App::dispatch(int key, bool is_key_code)
       case KEY_UP:
       case KEY_HOME:
       case KEY_END:
+        break;
+      case KEY_F(2):
+        _search->toggle_case_sensitive();
         break;
       default:
         return;

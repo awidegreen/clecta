@@ -31,6 +31,8 @@ InputWindow::handle(int key)
     case KEY_UP: case KEY_DOWN: 
     case KEY_HOME: case KEY_END:
       return;
+    case KEY_F(2): // case insensitive handling
+      break;
     case 127:  
     case KEY_BACKSPACE:
       if ( _in.size() ) _in.pop_back();
@@ -68,8 +70,8 @@ ListWindow::init()
   int max_x, max_y;
   getmaxyx(_parent, max_y, max_x);
   _win = derwin(_parent, max_y-_h_space, max_x, _h_space, 0);
-  //wmove(_win, 0, 1);
-  //box(_win, '|', '-');
+
+  _max_visible = getmaxy(_win);
   wrefresh(_win);
   draw();
 }
@@ -81,7 +83,7 @@ ListWindow::handle(int key)
 {
   if ( key == KEY_DOWN )
   {
-    if (_selected_row < (int)_search->matches().size()-1 )
+    if (_selected_row < _max_visible-1 )
       _selected_row++;
     // else ignore
   }
@@ -94,7 +96,7 @@ ListWindow::handle(int key)
   else if ( key == KEY_HOME )
     _selected_row = 0;
   else if ( key == KEY_END )
-    _selected_row = (int)_search->matches().size()-1;
+    _selected_row = _max_visible-1;
   else 
     _selected_row = 0;
   draw();
@@ -111,16 +113,20 @@ ListWindow::draw()
 
   for (auto& s : matches)
   {
-    mvwaddwstr(_win, line, 0, s.c_str() );
+    //auto p = std::to_wstring(s.score) + L" " + s.value;
+    auto p = s.value;
+
+    mvwaddwstr(_win, line, 0, p.c_str() );
+    if ( _selected_row == (int)line )
+    {
+      mvwchgat(_win, _selected_row, 0, -1, A_REVERSE, 0, nullptr);
+      _search->selected(_selected_row);
+    }
+    mvwchgat(_win, line, s.begin, s.end-s.begin, A_NORMAL, 2 /*colorpair*/, nullptr);
     ++line;
+    if ( line == (unsigned)_max_visible ) break; 
   }
 
-  // highlight seleted row
-  if ( _selected_row > -1 && matches.size() != 0)       
-  {
-    mvwchgat(_win, _selected_row, 0, -1, A_REVERSE, 1, nullptr);
-    _search->selected(_selected_row);
-  }
 
   wrefresh(_win);
 }
@@ -161,6 +167,13 @@ StatusWindow::draw()
       _search->matches().size(), 
       _nb_choices,
       _search->selected()+1);
+
+  std::wstring case_sense_str = L"case-sensitive";
+  if ( _search->case_insensitive() )
+    case_sense_str = L"case-insensitive";
+
+  auto start_x = getmaxx(_win) - case_sense_str.size();
+  mvwaddwstr(_win, 0, start_x, case_sense_str.c_str());
 
   wrefresh(_win);
 }
