@@ -10,6 +10,8 @@ terminal windows. UTF-8 is support.
 * NO fuzzy search yet 
 * status-line shows some stats about the candidates and matches
 
+![Demo](https://raw.github.com/awidegreen/clecta/master/demo.gif)
+
 ### Keys
 * `Home` go to the beginning match list
 * `End` go to the beginning match list
