@@ -1,7 +1,6 @@
 # clecta
 
-This a yet another port of [garybernhardt/selecta](https://github.com/garybernhardt/selecta) in C++ using Ncurses for the 
-terminal windows. UTF-8 is support.
+This is yet another port of [garybernhardt/selecta](https://github.com/garybernhardt/selecta) in C++ using Ncurses for the terminal window. UTF-8 is support.
 
 ### Some features
 * highlight matching string in match list
