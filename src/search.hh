@@ -23,6 +23,8 @@ public:
   typedef std::list<String> Choices;
   typedef std::vector<Match> Matches;
 
+  enum { NON_SELECTED = -1 };
+
   Search(bool case_insensitive = false);
   Search(const Choices& choices, bool case_insensitive = false);
 

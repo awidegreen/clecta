@@ -10,7 +10,7 @@ namespace
 }
 
 Search::Search(bool case_insensitive /* false */) :
-  _selected(-1),
+  _selected(NON_SELECTED),
   _case_insensitive(case_insensitive)
 { }
 
@@ -18,7 +18,7 @@ Search::Search(bool case_insensitive /* false */) :
 
 Search::Search(const Choices& choices, bool case_insensitive /* false */) :
   _choices(std::move(choices)),
-  _selected(-1),
+  _selected(NON_SELECTED),
   _case_insensitive(case_insensitive)
 { }
 
@@ -27,7 +27,7 @@ Search::Search(const Choices& choices, bool case_insensitive /* false */) :
 Search::String
 Search::selection() const
 {
-  if ( _selected >= 0 && (size_t)_selected < _matches.size() )
+  if ( _selected != NON_SELECTED && (size_t)_selected < _matches.size() )
     return _matches.at(_selected).value;
 
   return L"";
@@ -93,10 +93,23 @@ Search::get_score(const Search::String& query, Search::String candidate) const
   {
     ++score;
     //score += (found+query.size())/(float)candidate.size();
+    // get a score somewhere between 0 and 1 (float)
     score += 1 - (candidate.size()-(found + query.size()))/10.0;
-    m.score = score;
     m.begin = found;
     m.end = found + query.size();
+
+    // if exact length, increase score!
+    if ( query.size() == candidate.size() ) 
+    {
+      score += .1;
+    }
+    m.score = score;
+  }
+  else
+  {
+    // TODO do the fuzzy search here!
+    
+
   }
 
   return m;
