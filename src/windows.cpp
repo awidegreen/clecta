@@ -3,6 +3,8 @@
 #include "windows.hh"
 #include "search.hh"
 
+#include <iostream>
+
 #define INWIN_PROMPT_PEFEX L">>> "
 
 using namespace clecta;
@@ -30,13 +32,16 @@ InputWindow::handle(int key)
     // ignore this keys!
     case KEY_UP: case KEY_DOWN: 
     case KEY_HOME: case KEY_END:
+    case KEY_RESIZE:
       return;
-    case KEY_F(2): // case insensitive handling
+    case KEY_F(2): // case sensitive toggle handling
       break;
+    // del char handling
     case 127:  
     case KEY_BACKSPACE:
       if ( _in.size() ) _in.pop_back();
       break;
+    // every other char handling
     default:
       _in += key;
   };
@@ -81,24 +86,42 @@ ListWindow::init()
 void
 ListWindow::handle(int key)
 {
-  if ( key == KEY_DOWN )
+  switch ( key )
   {
-    if (_selected_row < _max_visible-1 )
-      _selected_row++;
-    // else ignore
+    case KEY_DOWN:
+    {
+      auto matches_size = _search->matches().size();
+      if (_selected_row < _max_visible-1 && 
+          _selected_row < (int)matches_size-1)
+        _selected_row++;
+      // else ignore
+      break;
+
+    }
+    case KEY_UP:
+      if (_selected_row > 0) 
+        _selected_row--;
+      // else ignore
+      break;
+    case KEY_HOME:
+      _selected_row = 0;
+      break;
+    case KEY_END:
+      _selected_row = _max_visible-1;
+      break;
+    case KEY_RESIZE:
+      std::cerr << "Got resize event" << std::endl;
+      // new size, could imply different amount of visible items
+      int max_x, max_y;
+      getmaxyx(_parent, max_y, max_x);
+      wresize(_win, max_y-_h_space, max_x);
+      _max_visible = getmaxy(_win);
+      break;
+    default:
+      _selected_row = 0;
+      break;
   }
-  else if ( key == KEY_UP )
-  {  
-    if (_selected_row > 0) 
-      _selected_row--;
-    // else ignore
-  } 
-  else if ( key == KEY_HOME )
-    _selected_row = 0;
-  else if ( key == KEY_END )
-    _selected_row = _max_visible-1;
-  else 
-    _selected_row = 0;
+
   draw();
 }
 
@@ -119,6 +142,7 @@ ListWindow::draw()
     mvwaddwstr(_win, line, 0, p.c_str() );
     if ( _selected_row == (int)line )
     {
+      // highlight selected row
       mvwchgat(_win, _selected_row, 0, -1, A_REVERSE, 0, nullptr);
       _search->selected(_selected_row);
     }
@@ -163,13 +187,13 @@ StatusWindow::draw()
 {
   wdeleteln(_win);
 
-  mvwprintw(_win, 0, 0, "shown: %zu/%zu selected: %d",   
+  mvwprintw(_win, 0, 0, "filtered: %zu total: %zu selected: %d",   
       _search->matches().size(), 
       _nb_choices,
       _search->selected()+1);
 
   std::wstring case_sense_str = L"case-sensitive";
-  if ( _search->case_insensitive() )
+  if ( !_search->case_sensitive() )
     case_sense_str = L"case-insensitive";
 
   auto start_x = getmaxx(_win) - case_sense_str.size();

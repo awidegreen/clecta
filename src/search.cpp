@@ -1,5 +1,7 @@
 #include <utility>
 #include <algorithm>
+#include <sstream>
+
 #include "search.hh"
 
 using namespace clecta;
@@ -9,9 +11,24 @@ namespace
 
 }
 
-Search::Search(bool case_insensitive /* false */) :
+//------------------------------------------------------------------------------
+
+Search::String 
+Search::Match::str() const 
+{
+  std::wstringstream ss;
+  ss << L"\"" << value << L"\": [begin:" << begin 
+    << L", end:" << end 
+    << L", score:" << score 
+    << L"]" << std::endl;
+  return ss.str();
+}
+
+//------------------------------------------------------------------------------
+
+Search::Search(bool case_sensitive /* false */) :
   _selected(NON_SELECTED),
-  _case_insensitive(case_insensitive)
+  _case_sensitive(case_sensitive)
 { }
 
 //------------------------------------------------------------------------------
@@ -19,7 +36,7 @@ Search::Search(bool case_insensitive /* false */) :
 Search::Search(const Choices& choices, bool case_insensitive /* false */) :
   _choices(std::move(choices)),
   _selected(NON_SELECTED),
-  _case_insensitive(case_insensitive)
+  _case_sensitive(case_insensitive)
 { }
 
 //------------------------------------------------------------------------------
@@ -40,7 +57,7 @@ Search::query(String term)
 {
   _matches.clear();
                               
-  if ( _case_insensitive )
+  if ( !_case_sensitive )
     std::transform(term.begin(), term.end(), term.begin(), ::tolower);
 
   for ( auto& s : _choices )
@@ -83,27 +100,31 @@ Search::get_score(const Search::String& query, Search::String candidate) const
     return m;
   }
 
-  if ( _case_insensitive )
+  if ( !_case_sensitive )
     std::transform(
         candidate.begin(), candidate.end(), candidate.begin(), ::tolower);
 
-  float score = 0.0;
+  double score = 0.0;
   auto found = candidate.find(query);
   if ( found != std::string::npos )
   {
-    ++score;
-    //score += (found+query.size())/(float)candidate.size();
-    // get a score somewhere between 0 and 1 (float)
-    score += 1 - (candidate.size()-(found + query.size()))/10.0;
+    ++score; // since it is found, increase it already by one!
+    // get a score somewhere between 0 and 1 (double)
+    auto relative_len = candidate.size() - query.size();
+
+    if ( relative_len == 0 )
+    { // same length ... good!
+      score += 1.1;
+    }
+    else 
+    {
+      score += 1 - (((relative_len)-found)/(double)(relative_len));
+    }
+
     m.begin = found;
     m.end = found + query.size();
-
-    // if exact length, increase score!
-    if ( query.size() == candidate.size() ) 
-    {
-      score += .1;
-    }
     m.score = score;
+    m.value = candidate;
   }
   else
   {

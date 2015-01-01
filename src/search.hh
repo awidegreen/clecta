@@ -14,10 +14,11 @@ public:
    * Score value is dynamitic where 0 is the worst!
    */
   struct Match {
-    float score;
+    double score;
     size_t begin;
     size_t end;
     String value;
+    String str() const;
   };
 
   typedef std::list<String> Choices;
@@ -25,8 +26,8 @@ public:
 
   enum { NON_SELECTED = -1 };
 
-  Search(bool case_insensitive = false);
-  Search(const Choices& choices, bool case_insensitive = false);
+  Search(bool case_sensitive = false);
+  Search(const Choices& choices, bool case_sensitive = false);
 
   /**
    * get the score for every choice based on query term
@@ -42,20 +43,22 @@ public:
   
   size_t size_choices() const;
 
-  void toggle_case_sensitive() { _case_insensitive = !_case_insensitive; }
-  bool case_insensitive() const { return _case_insensitive; }
+  void toggle_case_sensitive() { _case_sensitive = !_case_sensitive; }
+  bool case_sensitive() const { return _case_sensitive; }
 
   /**
    * Returns sorted list of choices which match best to the query.
    */
   const Matches& matches() const { return _matches; };
-private:
   Search::Match get_score(const Search::String& query, Search::String candidate) const;
+private:
 
   Choices _choices;
   Matches _matches;
   int _selected;
-  bool _case_insensitive;
+  bool _case_sensitive;
+
 };
+
 
 } // ns

@@ -9,6 +9,7 @@ terminal windows. UTF-8 is support.
 * switch case sensitivity for search `F2`
 * NO fuzzy search yet 
 * status-line shows some stats about the candidates
+* resize support
 
 ![Demo](https://raw.github.com/awidegreen/clecta/master/demo.gif)
 
@@ -20,7 +21,6 @@ terminal windows. UTF-8 is support.
 
 ### to be done 
 * fuzzy finding; currently, it only searches for the given query-string over all choices.
-* some unit testing 
 * more keybindings like `^D` and `^U` (see [selecta](https://github.com/garybernhardt/selecta) for more bindings)
 * `cmake` installation target
 * Improve matches/candidate handling (no copy)

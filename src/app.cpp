@@ -97,6 +97,7 @@ App::dispatch(int key, bool is_key_code)
       case KEY_UP:
       case KEY_HOME:
       case KEY_END:
+      case KEY_RESIZE:
         break;
       case KEY_F(2):
         _search->toggle_case_sensitive();

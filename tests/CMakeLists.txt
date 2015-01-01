@@ -14,7 +14,7 @@ file( GLOB SOURCES
   "${CLECTA_SOURCE_DIR}/src/search.cpp"
 )
 
-#configure_file( ./test_data/wanipconnSCPD.xml ${CMAKE_CURRENT_BINARY_DIR} COPYONLY )
+configure_file( ./test_data/words50k.txt ${CMAKE_CURRENT_BINARY_DIR} COPYONLY )
 
 add_executable( ${PROJECT_NAME} ${SOURCES} )
 target_link_libraries( ${PROJECT_NAME} 
