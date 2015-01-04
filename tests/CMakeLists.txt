@@ -17,10 +17,11 @@ file( GLOB SOURCES
 configure_file( ./test_data/words50k.txt ${CMAKE_CURRENT_BINARY_DIR} COPYONLY )
 
 add_executable( ${PROJECT_NAME} ${SOURCES} )
+
+#gmock 
+#gmock_main 
 target_link_libraries( ${PROJECT_NAME} 
                         pthread 
-                        gmock 
-                        gmock_main 
                         gtest 
                         gtest_main)
 

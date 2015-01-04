@@ -1,5 +1,4 @@
 // include global test defs
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <fstream>
