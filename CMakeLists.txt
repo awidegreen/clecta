@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project(CLECTA)
 
 ADD_DEFINITIONS(
-    -std=c++14 
+    -std=c++11 
     # Other flags
 )
 
