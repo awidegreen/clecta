@@ -1,0 +1,28 @@
+language: cpp
+compiler:
+  - gcc
+before_install:
+  - sudo apt-get update -qq
+  #- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get install -qq cmake g++ libncursesw5
+before_script:
+  - mkdir build
+  - cd build 
+  - ../scripts/prep_gtest.sh
+  - cd ..
+script:
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - make -j3
+  - tests/clecta-tests
+branches:
+  only:
+    - master
+notifications:
+  email:
+    recipients:
+      - armin.widegreen@gmail.com
+    on_success: always
+    on_failure: always
+os:
+  - linux
