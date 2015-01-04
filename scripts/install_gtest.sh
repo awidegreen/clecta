@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/sh
+set -ex
 
 # install gtest 
 sudo apt-get install -qq libboost-all-dev libgtest-dev 
