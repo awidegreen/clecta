@@ -4,7 +4,7 @@ compiler:
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get -qq update
-  - sudo apt-get install -qq cmake g++-4.8 libncursesw5
+  - sudo apt-get install -qq cmake g++-4.8 libncursesw5-dev
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 before_script:
   - mkdir build
