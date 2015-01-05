@@ -13,6 +13,9 @@ file(GLOB SOURCES
 set(CURSES_NEED_NCURSES TRUE)
 find_package(Curses REQUIRED)
 message(${CURSES_LIBRARY})
+message(${CURSES_INCLUDE_DIR})
+
+INCLUDE_DIRECTORIES(${CURSES_INCLUDE_DIR})
 
 add_executable(clecta ${SOURCES})
 target_link_libraries(clecta ncursesw)
