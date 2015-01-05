@@ -10,9 +10,12 @@ file(GLOB SOURCES
   "src/*.cpp"
   )
 
+set(CURSES_NEED_NCURSES TRUE)
+find_package(Curses REQUIRED)
+message(${CURSES_LIBRARY})
+
 add_executable(clecta ${SOURCES})
 target_link_libraries(clecta ncursesw)
-
 
 find_package(GTest REQUIRED)
 if (GTEST_FOUND)
