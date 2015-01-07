@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project(CLECTA)
 
-ADD_DEFINITIONS(
+add_definitions(
     -std=c++11 
     # Other flags
 )
@@ -10,15 +10,10 @@ file(GLOB SOURCES
   "src/*.cpp"
   )
 
-set(CURSES_NEED_NCURSES TRUE)
-find_package(Curses REQUIRED)
-message(${CURSES_LIBRARY})
-message(${CURSES_INCLUDE_DIR})
-
-INCLUDE_DIRECTORIES(${CURSES_INCLUDE_DIR})
-
 add_executable(clecta ${SOURCES})
 target_link_libraries(clecta ncursesw)
+
+#add_subdirectory(src) 
 
 find_package(GTest REQUIRED)
 if (GTEST_FOUND)
