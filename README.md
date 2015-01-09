@@ -48,3 +48,5 @@ make
 Copyright (c) Armin Widegreen
 
 Distributed under the BSD-Clause-2 License, see LICENSE.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/awidegreen/clecta/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
