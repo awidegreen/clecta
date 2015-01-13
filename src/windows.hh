@@ -1,6 +1,8 @@
 #include <string>
 #include <ncurses.h>
 
+#include "keys.hh"
+
 namespace clecta
 {
 
@@ -13,7 +15,7 @@ public:
     _parent(parent), _search(search) { }
   virtual ~ClectaWin() {}
 
-  virtual void handle(int key) = 0;
+  virtual void handle(CLECTA_KEY key) = 0;
   virtual void draw() = 0;
   virtual WINDOW* curses_win() { return NULL; }
 protected:
@@ -34,7 +36,7 @@ public:
     _height(height)
   { init(); }
 
-  void handle(int key);
+  void handle(CLECTA_KEY key);
   void draw();
   virtual WINDOW* curses_win() { return _win; }
 
@@ -43,6 +45,11 @@ private:
   WINDOW* _win;
   unsigned _height;
   std::wstring _in;
+
+  // preparation for moving the cursor in the search term (M-b, M-a, C-d, ...).
+  // for just editing search term at the end, this is certainly not needed
+  // Anyhow, it used to set the cursor at the appropiate position.
+  unsigned _cur_pos;
 };
 
 //------------------------------------------------------------------------------
@@ -59,7 +66,7 @@ public:
     _max_visible(0)
   { init(); }
 
-  void handle(int key);
+  void handle(CLECTA_KEY key);
   void draw();
 private:
   void init();
@@ -81,7 +88,7 @@ public:
     _height(height)
   { init(); }
 
-  void handle(int /* key */);
+  void handle(CLECTA_KEY /* key */);
   void draw();
 private:
   void init();

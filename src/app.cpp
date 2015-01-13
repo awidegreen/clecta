@@ -1,6 +1,9 @@
 #include <ncurses.h>
 
+//#include <iostream>
+
 #include "app.hh"
+#include "keys.hh"
 
 using namespace clecta;
 
@@ -64,7 +67,7 @@ App::run()
 
   for (;;)
   {
-    wint_t c;           
+    CLECTA_KEY c;           
     int r = wget_wch(_inputw->curses_win(), &c);
     if ( r == ERR )
     {
@@ -72,13 +75,42 @@ App::run()
       return;
     }
 
-    if ( c == KEY_ENTER || c == '\n' )
+    //std::cerr << "keyname: " << c << std::endl;
+    //std::cerr << "keyname ctrl: " << CTRL(c) << std::endl;
+
+    switch (c) 
     {
-      endwin();
-      return;
+      //--- return key handling
+      case KEY_ENTER: 
+      case '\n': 
+      case '\r':
+        endwin();
+        return;
+      //-----
+      //--- ESC/ ALT+key handling, see man getch
+      case 0x1b: // ESC 
+        if ( wget_wch(_inputw->curses_win(), &c) == ERR )
+        {
+          //std::wcerr << L"ESC was pressed!" << std::endl;
+          // well that was escape!
+          exit(1);
+        }
+        //std::wcerr << L"ALT+" << key_name(c) << L" pressed."<< std::endl;
+        r = KEY_CODE_YES;
+        break;
+      //-----
+      default:
+        if ( is_pressed_with_ctrl_key(c) )
+        {
+          //std::wcerr << L"ctrl was pressed!" << std::endl;
+          r = KEY_CODE_YES;
+          c = map_ctrl_key(c);
+        }
+        break;
     }
 
     dispatch(c, r == KEY_CODE_YES );
+
   }
 
 }
@@ -86,11 +118,11 @@ App::run()
 //------------------------------------------------------------------------------
 
 void
-App::dispatch(int key, bool is_key_code)
+App::dispatch(CLECTA_KEY key, bool is_key_code)
 {
 
   if ( is_key_code  )
-  { // we do not handle any other special keys and newline!
+  { 
     switch (key)
     {
       case KEY_DOWN:
@@ -103,7 +135,10 @@ App::dispatch(int key, bool is_key_code)
         _search->toggle_case_sensitive();
         break;
       default:
-        return;
+        if ( is_clecta_key(key) )
+          break;
+        else
+          return;
     }
   }
 

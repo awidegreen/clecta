@@ -1,9 +1,11 @@
 #include <ncurses.h>
 
+#include <iostream>
+#include <cctype>
+#include <regex>
+
 #include "windows.hh"
 #include "search.hh"
-
-#include <iostream>
 
 #define INWIN_PROMPT_PEFEX L">>> "
 
@@ -18,6 +20,7 @@ void InputWindow::init()
   getmaxyx(_parent, max_y, max_x);
   _win = derwin(_parent, _height, max_x, 0, 0);
   keypad(_win, true);
+  _cur_pos = 0;
 
   draw();
 }
@@ -25,28 +28,39 @@ void InputWindow::init()
 //------------------------------------------------------------------------------
 
 void
-InputWindow::handle(int key) 
+InputWindow::handle(CLECTA_KEY key) 
 {
+  bool valid = false;
+
   switch ( key )
   {
-    // ignore this keys!
-    case KEY_UP: case KEY_DOWN: 
-    case KEY_HOME: case KEY_END:
-    case KEY_RESIZE:
-      return;
-    case KEY_F(2): // case sensitive toggle handling
-      break;
     // del char handling
-    case 127:  
+    case 127: 
     case KEY_BACKSPACE:
       if ( _in.size() ) _in.pop_back();
+      valid = true;
+        _cur_pos--;
+      break;
+    case CLECTA_KEY_CTRL_U: 
+      // clean search string
+      _in = L"";
+      valid = true;
       break;
     // every other char handling
     default:
-      _in += key;
+      if ( std::isprint(key) ) 
+      {
+        _in += key;
+        _cur_pos++;
+        valid = true;
+      }
+      break;
   };
 
-  _search->query(_in);
+  if ( valid )
+  { // only if valid key, set query
+    _search->query(_in);
+  }
 
   draw();
 }
@@ -62,6 +76,7 @@ InputWindow::draw()
   tmp += _in;
 
   mvwaddwstr(_win, 0, 0, tmp.c_str());
+  wmove(_win, 0, _cur_pos+tmp.size());
   wrefresh(_win);
 }
 
@@ -84,20 +99,26 @@ ListWindow::init()
 //------------------------------------------------------------------------------
 
 void
-ListWindow::handle(int key)
+ListWindow::handle(CLECTA_KEY key)
 {
   switch ( key )
   {
+    case CLECTA_KEY_CTRL_N:
     case KEY_DOWN:
     {
       auto matches_size = _search->matches().size();
       if (_selected_row < _max_visible-1 && 
           _selected_row < (int)matches_size-1)
+      {
+        // don't go any further down if there are no more matches or max 
+        // height is alread reached.
         _selected_row++;
+      }
       // else ignore
       break;
 
     }
+    case CLECTA_KEY_CTRL_P: 
     case KEY_UP:
       if (_selected_row > 0) 
         _selected_row--;
@@ -167,6 +188,7 @@ void StatusWindow::init()
   _win = derwin(_parent, _height, max_x, 1, 0);
   keypad(_win, true);
 
+  // set background color
   wbkgd(_win, COLOR_PAIR(1));
 
   draw();
@@ -175,7 +197,7 @@ void StatusWindow::init()
 //------------------------------------------------------------------------------
 
 void
-StatusWindow::handle(int /* key */) 
+StatusWindow::handle(CLECTA_KEY /* key */) 
 {
   draw();
 }

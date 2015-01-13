@@ -15,7 +15,7 @@ public:
 
   std::string get_selection();
 private:
-  void dispatch(int key, bool is_key_code);
+  void dispatch(CLECTA_KEY key, bool is_key_code);
   void init();
 
   Search* _search;

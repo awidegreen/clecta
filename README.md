@@ -16,11 +16,14 @@ This is yet another port of [garybernhardt/selecta](https://github.com/garybernh
 * `Home` go to the beginning match list
 * `End` go to the beginning match list
 * `F2` toggle case-sensitivity
-* `Arrow-Up` and `Arrow-down` for selecting string from match list 
+* `Arrow-Up` and `Arrow-Down` for selecting string from match list 
+* `^U` Empty search term
+* `^N` alias for `Arrow-Down`
+* `^P` alias for `Arrow-Up`
 
 ### to be done 
 * fuzzy finding; currently, it only searches for the given query-string over all choices.
-* more keybindings like `^D` and `^U` (see [selecta](https://github.com/garybernhardt/selecta) for more bindings)
+* add more key bindings, see [readline](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29#Keyboard_shortcuts)
 * `cmake` installation target
 * Improve matches/candidate handling (no copy)
 
