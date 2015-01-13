@@ -1,5 +1,7 @@
 # clecta
 
+[![Build Status](https://travis-ci.org/awidegreen/clecta.svg?branch=master)](https://travis-ci.org/awidegreen/clecta)
+
 This is yet another port of [garybernhardt/selecta](https://github.com/garybernhardt/selecta) in C++ using Ncurses for the terminal window. UTF-8 is support.
 
 ### Some features
@@ -49,3 +51,5 @@ make
 Copyright (c) Armin Widegreen
 
 Distributed under the BSD-Clause-2 License, see LICENSE.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/awidegreen/clecta/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
