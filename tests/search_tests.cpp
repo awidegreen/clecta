@@ -11,8 +11,8 @@ using namespace clecta;
 
 namespace 
 {
-  std::pair<unsigned, clecta::Search::Match> 
-  contains(const Search::Matches& matches, const Search::String& str)
+  std::pair<unsigned, clecta::Match> 
+  contains(const Search::Matches& matches, const String& str)
   {
     unsigned cnt = 1;
     for(const auto& m : matches )
@@ -22,7 +22,7 @@ namespace
       ++cnt;
     }
     // return first as 0 which is FALSE!
-    return std::make_pair(0, clecta::Search::Match());
+    return std::make_pair(0, clecta::Match());
   }
   
 //------------------------------------------------------------------------------
@@ -223,21 +223,21 @@ TEST(SearchTest, FilterWithSpace)
   
 //------------------------------------------------------------------------------
 
-TEST(SearchTest, ScoreCalc)
-{
-  std::wstring candidate = L"Paulis  no"; // 10 char
-  std::wstring query = L"is"; // "is" ends at 7 so it sould have match + .7
+//TEST(SearchTest, ScoreCalc)
+//{
+  //std::wstring candidate = L"Paulis  no"; // 10 char
+  //std::wstring query = L"is"; // "is" ends at 7 so it sould have match + .7
 
-  Search search;
+  //Search search;
 
-  auto m = search.get_score(query, candidate);
+  //auto m = search.get_score(query, candidate);
 
-  EXPECT_EQ( 1.5, m.score );
+  //EXPECT_EQ( 1.5, m.score );
 
-  candidate = L"Paul is not Simon an";
-  m = search.get_score(query, candidate);
-  EXPECT_TRUE( m.score > 1.25 && m.score < 1.30 );
-}
+  //candidate = L"Paul is not Simon an";
+  //m = search.get_score(query, candidate);
+  //EXPECT_TRUE( m.score > 1.25 && m.score < 1.30 );
+//}
 
 //------------------------------------------------------------------------------
 
@@ -314,7 +314,7 @@ TEST(SearchTest, Selection)
     L"bla", 
   };
 
-  Search::String empty = L"";
+  String empty = L"";
 
   Search search(choices);
 

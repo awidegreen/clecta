@@ -12,6 +12,7 @@ include_directories(
 file( GLOB SOURCES 
   *.cpp 
   "${CLECTA_SOURCE_DIR}/src/search.cpp"
+  "${CLECTA_SOURCE_DIR}/src/matcher.cpp"
 )
 
 configure_file( ./test_data/words50k.txt ${CMAKE_CURRENT_BINARY_DIR} COPYONLY )
