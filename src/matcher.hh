@@ -2,7 +2,7 @@
 #define MATCHER_HH
 
 #include <string>
-#include <array>
+#include <vector>
 
 namespace clecta
 {
@@ -18,6 +18,8 @@ struct Match {
   size_t end;
   String value;
   String str() const;
+  Match() : score(0.0), begin(0), end(0), value(L"") { }
+  Match(double default_score) : score(default_score), begin(0), end(0), value(L"") { }
 };
 
 //------------------------------------------------------------------------------
@@ -61,15 +63,19 @@ public:
   Match 
   get_score(const String& needle, const String& haystack) const;
 private:
-  // called recursively to get score
-  double 
-  match(size_t haystack_idx, size_t needle_idx, 
-        size_t last_idx, double score) const;
+  struct MemoInfo
+  { 
+    std::vector<Match> memo;
+    double max_score_per_char;
+    const String& needle;
+    const String& haystack;
+  };
 
-  mutable String _needle;
-  mutable String _haystack;
-  mutable double* _memo;
-  mutable double _max_score_per_char;
+  // called recursively to get score
+  Match 
+  match(MemoInfo* memo_info,
+        size_t haystack_idx, size_t needle_idx, 
+        size_t last_idx, double score) const;
 };
 
 //------------------------------------------------------------------------------

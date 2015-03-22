@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "app.hh"
+#include "matcher.hh"
 
 int main()
 {

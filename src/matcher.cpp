@@ -26,7 +26,7 @@ Match::str() const
 Match
 SimpleMatcher::get_score(const String& needle, const String& haystack) const
 {
-  Match m { 0.0, 0, 0, L"" };
+  Match m;
   // if query is empty, everything should be found!
   if ( needle.size() == 0 ) 
   {
@@ -66,64 +66,71 @@ SimpleMatcher::get_score(const String& needle, const String& haystack) const
 Match 
 CmdTMatcher::get_score(const String& needle, const String& haystack) const
 {
-  Match m{0,0,0,L""};
 
-  double memo[needle.size() * haystack.size()];
-  std::for_each(memo, memo+sizeof(memo), [] (double d) { 
-        d = std::numeric_limits<double>::max(); 
-      });
+  double memo_size = needle.size() * haystack.size();
+  
+  Match def_match(std::numeric_limits<double>::max());
+  std::vector<Match> matches(memo_size, def_match);
+  MemoInfo m_info{
+    matches,
+    1.0,
+    needle,
+    haystack
+  };
 
-  _needle = needle;
-  _haystack = haystack;
-  _memo = memo;
-
-  m.score = match(0, 0, 0, 0.0);
+  auto m = match(&m_info, 0, 0, 0, 0.0);
 
   return m;
 }
 
 //------------------------------------------------------------------------------
 
-double 
+Match 
 CmdTMatcher::match(
+    CmdTMatcher::MemoInfo* memo_info,
     size_t haystack_idx, 
     size_t needle_idx, 
     size_t last_idx, 
     double score) const 
 {
   double seen_score = 0.0;
+  auto& needle = memo_info->needle;
+  auto& haystack = memo_info->haystack;
+
   auto memo_idx = haystack_idx;
-  auto memoized = _memo[needle_idx * _needle.size() + memo_idx];
+  auto& current_mem = memo_info->memo[needle_idx * needle.size() + memo_idx];
+  auto memoized = current_mem.score;
 
   if ( memoized != std::numeric_limits<double>::max() )
     return memoized;
 
-  if (_haystack.size() - haystack_idx < _needle.size() - needle_idx) {
+  if (memo_info->haystack.size() - haystack_idx < memo_info->needle.size() - needle_idx) 
+  {
     score = 0.0;
-    _memo[needle_idx * _needle.size() + memo_idx] = score;
+    memo_info->memo[needle_idx * needle.size() + memo_idx] = score;
     return score;
   }
 
-  for ( auto i = needle_idx; i < _needle.size(); ++i )
+  for ( auto i = needle_idx; i < needle.size(); ++i )
   {
-    auto c = _needle[i];
+    auto c = needle[i];
     bool found = false;
 
     for ( auto j = haystack_idx; 
-          j <= _haystack.size() - (_needle.size() - i);
+          j <= haystack.size() - (needle.size() - i);
           ++j, ++haystack_idx)
     {
-      auto d = _haystack[j];
+      auto d = haystack[j];
       if ( c == d )
       {
         found = true;
-        double score_for_char = _max_score_per_char;
+        double score_for_char = memo_info->max_score_per_char;
         auto distance = j - last_idx;
         if ( distance > 1 )
         {
           double factor = 1.0;
-          auto last = _haystack[j-1];
-          auto current = _haystack[j];
+          auto last = haystack[j-1];
+          auto current = haystack[j];
           if ( last == L'/' )
             factor = 0.9;
           else if (last == L'-' ||
@@ -145,13 +152,13 @@ CmdTMatcher::match(
           score_for_char *= factor;
         }
 
-        if (++j <_haystack.size() )
+        if (++j < haystack.size() )
         {
           // bump cursor one char to the right and
           // use recursion to try and find a better match
-          double sub_score = match(j, i, last_idx, score);
-          if (sub_score > seen_score)
-            seen_score = sub_score;
+          Match sub_match = match(memo_info, j, i, last_idx, score);
+          if (sub_match.score > seen_score)
+            seen_score = sub_match.score;
         }
 
         score += score_for_char;
@@ -163,13 +170,13 @@ CmdTMatcher::match(
     if (!found) 
     {
       score = 0.0;
-      _memo[needle_idx * _needle.size() + memo_idx] = score;
+      memo_info->memo[needle_idx * needle.size() + memo_idx] = score;
       return score;
     }
   }
 
   score = score > seen_score ? score : seen_score;
-  _memo[needle_idx * _needle.size() + memo_idx] = score;
+  memo_info->memo[needle_idx * needle.size() + memo_idx] = score;
   return score;
 }
 

@@ -23,7 +23,11 @@ public:
    * note, copy needed because it will be put to lower internally 
    */
   void query(String term);
-  void matcher(Matcher* matcher) { _matcher = matcher; }
+  void matcher(Matcher* matcher)
+  { 
+    if ( _matcher ) delete _matcher;
+    _matcher = matcher;
+  }
 
   void add_choice(const String& s) { _choices.push_back(s); }
 

@@ -5,12 +5,6 @@
 
 using namespace clecta;
 
-namespace 
-{ // anonymous namespace
-
-}
-
-
 //------------------------------------------------------------------------------
 
 Search::Search(bool case_sensitive /* false */) :
