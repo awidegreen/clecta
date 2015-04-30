@@ -1,30 +1,22 @@
-project( clecta-tests )
-cmake_minimum_required( VERSION 2.8 )
-
-#option(tr064_build_tests "Build all of tr064's unit tests." OFF)
-#set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGTEST_HAS_TR1_TUPLE=0" )
-
 include_directories(
   SYSTEM             
-  "${CLECTA_SOURCE_DIR}/src"
+  "../src"
   )
 
 file( GLOB SOURCES 
   *.cpp 
-  "${CLECTA_SOURCE_DIR}/src/search.cpp"
-  "${CLECTA_SOURCE_DIR}/src/matcher.cpp"
+  "../src/search.cpp"
+  "../src/matcher.cpp"
 )
 
 configure_file( ./test_data/words50k.txt ${CMAKE_CURRENT_BINARY_DIR} COPYONLY )
 
-add_executable( ${PROJECT_NAME} ${SOURCES} )
+add_executable( clecta-tests ${SOURCES} )
 
-#gmock 
-#gmock_main 
-target_link_libraries( ${PROJECT_NAME} 
+target_link_libraries( clecta-tests
                         pthread 
                         gtest 
                         gtest_main)
 
-add_test( clecta-tests ${PROJECT_NAME} )
+add_test( clecta-tests clecta-tests)
 

@@ -18,8 +18,9 @@ struct Match {
   size_t end;
   String value;
   String str() const;
-  Match() : score(0.0), begin(0), end(0), value(L"") { }
-  Match(double default_score) : score(default_score), begin(0), end(0), value(L"") { }
+  Match() : score(0), begin(0), end(0), value(L"") { }
+  explicit Match(double default_score) : 
+    score(default_score), begin(0), end(0), value(L"") { }
 };
 
 //------------------------------------------------------------------------------

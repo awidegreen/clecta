@@ -93,22 +93,24 @@ CmdTMatcher::match(
     size_t last_idx, 
     double score) const 
 {
-  double seen_score = 0.0;
+  //double seen_score = 0.0;
+  Match seen_match;
+
   auto& needle = memo_info->needle;
   auto& haystack = memo_info->haystack;
 
   auto memo_idx = haystack_idx;
   auto& current_mem = memo_info->memo[needle_idx * needle.size() + memo_idx];
-  auto memoized = current_mem.score;
+  current_mem.value = haystack;
 
-  if ( memoized != std::numeric_limits<double>::max() )
-    return memoized;
+  if ( current_mem.score != std::numeric_limits<double>::max() )
+    return current_mem;
 
-  if (memo_info->haystack.size() - haystack_idx < memo_info->needle.size() - needle_idx) 
+  if (memo_info->haystack.size() - haystack_idx < 
+      memo_info->needle.size() - needle_idx) 
   {
-    score = 0.0;
-    memo_info->memo[needle_idx * needle.size() + memo_idx] = score;
-    return score;
+    current_mem.score = 0;
+    return current_mem;
   }
 
   for ( auto i = needle_idx; i < needle.size(); ++i )
@@ -124,6 +126,9 @@ CmdTMatcher::match(
       if ( c == d )
       {
         found = true;
+        if ( i == 0 ) current_mem.begin = j;
+        if ( i == needle.size()-1 ) current_mem.end = j;
+
         double score_for_char = memo_info->max_score_per_char;
         auto distance = j - last_idx;
         if ( distance > 1 )
@@ -157,8 +162,8 @@ CmdTMatcher::match(
           // bump cursor one char to the right and
           // use recursion to try and find a better match
           Match sub_match = match(memo_info, j, i, last_idx, score);
-          if (sub_match.score > seen_score)
-            seen_score = sub_match.score;
+          if (sub_match.score > seen_match.score)
+            seen_match = sub_match;
         }
 
         score += score_for_char;
@@ -169,15 +174,15 @@ CmdTMatcher::match(
 
     if (!found) 
     {
-      score = 0.0;
-      memo_info->memo[needle_idx * needle.size() + memo_idx] = score;
-      return score;
+      memo_info->memo[needle_idx * needle.size() + memo_idx].score = 0;
+      return Match();
     }
   }
+                      
+    
 
-  score = score > seen_score ? score : seen_score;
-  memo_info->memo[needle_idx * needle.size() + memo_idx] = score;
-  return score;
+  current_mem.score = score > seen_match.score ? score : seen_match.score;
+  return current_mem;
 }
 
 //------------------------------------------------------------------------------

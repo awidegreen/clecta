@@ -46,6 +46,17 @@ void
 Search::query(String term)
 {
   _matches.clear();
+
+  if ( term.empty() )
+  {
+    std::for_each(_choices.begin(), _choices.end(), [this](const String& str)
+        {
+          Match m;
+          m.value = str;
+          _matches.push_back(m);
+        });
+    return;
+  }
                               
   if ( !_case_sensitive )
     std::transform(term.begin(), term.end(), term.begin(), ::tolower);
