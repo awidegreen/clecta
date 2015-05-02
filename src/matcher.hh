@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace clecta
 {
@@ -31,11 +32,20 @@ struct Match {
 class Matcher
 {
 public:
+  typedef std::shared_ptr<Matcher> Ptr;
+  /**
+   * Constructor requires a name of the matcher, no default!
+   */
+  Matcher(const char* name) : _name(name) {}
+
   virtual ~Matcher() { }
 
   virtual Match 
   get_score(const String& needle, const String& haystack) const = 0;
+
+  const char* name() const {return _name;};
 private:
+  const char* _name;
 };
 
 //------------------------------------------------------------------------------
@@ -45,6 +55,8 @@ private:
 class SimpleMatcher : public Matcher
 {
 public: 
+  SimpleMatcher();
+
   // virtual
   Match 
   get_score(const String& needle, const String& haystack) const;
@@ -59,10 +71,11 @@ private:
 class CmdTMatcher : public Matcher
 {
 public:
-  CmdTMatcher() {}
+  CmdTMatcher(); 
   // virtual
   Match 
   get_score(const String& needle, const String& haystack) const;
+
 private:
   struct MemoInfo
   { 

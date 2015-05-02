@@ -1,17 +1,19 @@
 #include <string>
+#include <memory>
 #include <ncurses.h>
 
 #include "keys.hh"
+#include "search.hh"
 
 namespace clecta
 {
 
-class Search;
-
 class ClectaWin
 {
 public:
-  ClectaWin(WINDOW* parent, Search* search) : 
+  typedef std::unique_ptr<ClectaWin> Ptr;
+
+  ClectaWin(WINDOW* parent, Search::Ptr search) : 
     _parent(parent), _search(search) { }
   virtual ~ClectaWin() {}
 
@@ -21,7 +23,7 @@ public:
 protected:
   virtual void init() = 0;
   WINDOW* _parent;
-  Search* _search;
+  Search::Ptr _search;
 };
 
 //------------------------------------------------------------------------------
@@ -31,7 +33,7 @@ protected:
 class InputWindow : public ClectaWin
 {
 public:
-  InputWindow(WINDOW* p, Search* search, unsigned height = 1) : 
+  InputWindow(WINDOW* p, Search::Ptr search, unsigned height = 1) : 
     ClectaWin(p, search),
     _height(height)
   { init(); }
@@ -59,7 +61,7 @@ private:
 class ListWindow : public ClectaWin
 {
 public:
-  ListWindow(WINDOW* p, Search* search, unsigned h_space = 1) : 
+  ListWindow(WINDOW* p, Search::Ptr search, unsigned h_space = 1) : 
     ClectaWin(p, search),
     _h_space(h_space),
     _selected_row(-1),
@@ -83,7 +85,7 @@ private:
 class StatusWindow : public ClectaWin
 {
 public:
-  StatusWindow(WINDOW* p, Search* search, unsigned height = 1) : 
+  StatusWindow(WINDOW* p, Search::Ptr search, unsigned height = 1) : 
     ClectaWin(p, search),
     _height(height)
   { init(); }

@@ -1,6 +1,11 @@
-#include <list>
+#ifndef SEARCH_HH
+#define SEARCH_HH
+
+#include <queue>
 #include <vector>
+#include <list>
 #include <string>
+#include <memory>
 #include "matcher.hh"
 
 namespace clecta
@@ -11,6 +16,7 @@ class Search
 public:
   typedef std::list<String> Choices;
   typedef std::vector<Match> Matches;
+  typedef std::shared_ptr<Search> Ptr;
 
   enum { NON_SELECTED = -1 };
 
@@ -23,11 +29,6 @@ public:
    * note, copy needed because it will be put to lower internally 
    */
   void query(String term);
-  void matcher(Matcher* matcher)
-  { 
-    if ( _matcher ) delete _matcher;
-    _matcher = matcher;
-  }
 
   void add_choice(const String& s) { _choices.push_back(s); }
 
@@ -40,18 +41,43 @@ public:
   void toggle_case_sensitive() { _case_sensitive = !_case_sensitive; }
   bool case_sensitive() const { return _case_sensitive; }
 
+
   /**
    * Returns sorted list of choices which match best to the query.
    */
   const Matches& matches() const { return _matches; };
+
+  /**
+   * Register a matcher. If no matcher has be registered yet, it will directly
+   * be taken as the current matcher, otherwise it will be queued for selecting
+   * a different matcher, see next_matcher().
+   */
+  void register_matcher(Matcher::Ptr matcher);
+
+  /**
+   * Gets the name of the currently selected matcher.
+   */
+  const char* matcher_name() 
+  { 
+    return _matcher ? _matcher->name() : "NoMatcher";
+  }
+
+  /**
+   * Selects the next matcher from the previously registered ones.
+   */
+  void next_matcher();
 private:
+  typedef std::queue<Matcher::Ptr> Matchers;
 
   Choices _choices;
   Matches _matches;
   int _selected;
   bool _case_sensitive;
-  Matcher* _matcher;
+  Matcher::Ptr _matcher;
+  Matchers _matchers;
 };
 
 
 } // ns
+
+#endif /* SEARCH_HH */

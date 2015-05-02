@@ -3,6 +3,8 @@
 
 #include <fstream>
 
+#include <matcher.hh>
+#include <search.hh>
 #include "test_utils.hh"
 
 #define TEST_FILE_50K_WORDS "./tests/words50k.txt"
@@ -11,7 +13,7 @@ using namespace clecta;
 
 //------------------------------------------------------------------------------
 
-TEST(SearchTest, InitEmpty)
+TEST(SearchTest, InitEmptyWithNoMatcher)
 {
   Search search;
 
@@ -20,6 +22,8 @@ TEST(SearchTest, InitEmpty)
   EXPECT_EQ(L"", search.selection());
 
   EXPECT_EQ(0, search.size_choices());
+
+  EXPECT_EQ( std::string("NoMatcher") , search.matcher_name());
 
   auto& matches = search.matches();
   EXPECT_EQ(0, matches.size());
@@ -39,6 +43,8 @@ TEST(SearchTest, InitWithChoices)
   };
 
   Search search(choices);
+  search.register_matcher(Matcher::Ptr(new SimpleMatcher()));
+
   auto matches = search.matches();
   EXPECT_EQ(0, matches.size());
   EXPECT_EQ(Search::NON_SELECTED, search.selected());
@@ -65,6 +71,7 @@ TEST(SearchTest, AddChoices)
   };
 
   Search search;
+  search.register_matcher(Matcher::Ptr(new SimpleMatcher()));
   EXPECT_EQ(0, search.size_choices());
 
   for (auto& c : choices )
@@ -99,6 +106,7 @@ TEST(SearchTest, CaseSensitive)
   };
 
   Search search(choices);
+  search.register_matcher(Matcher::Ptr(new SimpleMatcher()));
   EXPECT_FALSE(search.case_sensitive());
 
   search.query(L"o");
@@ -164,6 +172,7 @@ TEST(SearchTest, Selection)
   String empty = L"";
 
   Search search(choices);
+  search.register_matcher(Matcher::Ptr(new SimpleMatcher()));
 
   EXPECT_EQ(Search::NON_SELECTED, search.selected());
   EXPECT_EQ(empty, search.selection());
@@ -209,6 +218,7 @@ TEST(SearchPerformanceTest, TestFile50kCaseInSensitive)
   }
 
   Search search(choices);
+  search.register_matcher(Matcher::Ptr(new SimpleMatcher()));
   EXPECT_EQ(50000, search.size_choices());
   EXPECT_FALSE(search.case_sensitive());
   
@@ -232,6 +242,7 @@ TEST(SearchPerformanceTest, TestFile50kCaseSensitive)
   }
 
   Search search(choices);
+  search.register_matcher(Matcher::Ptr(new SimpleMatcher()));
   EXPECT_EQ(50000, search.size_choices());
   EXPECT_FALSE(search.case_sensitive());
 

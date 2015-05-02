@@ -46,6 +46,13 @@ InputWindow::handle(CLECTA_KEY key)
       _in = L"";
       valid = true;
       break;
+    // toggle case sensitive
+    case CLECTA_KEY_TOGGLE_CASE:
+      // fall-through
+    // switch matcher
+    case CLECTA_KEY_SWITCH_MATCHER:
+      valid = true;
+      break;
     // every other char handling
     default:
       if ( std::isprint(key) ) 
@@ -172,7 +179,6 @@ ListWindow::draw()
     if ( line == (unsigned)_max_visible ) break; 
   }
 
-
   wrefresh(_win);
 }
 
@@ -209,10 +215,11 @@ StatusWindow::draw()
 {
   wdeleteln(_win);
 
-  mvwprintw(_win, 0, 0, "filtered: %zu total: %zu selected: %d",   
+  mvwprintw(_win, 0, 0, "filtered: %zu total: %zu selected: %d\t%s",   
       _search->matches().size(), 
       _nb_choices,
-      _search->selected()+1);
+      _search->selected()+1,
+      _search->matcher_name());
 
   std::wstring case_sense_str = L"case-sensitive";
   if ( !_search->case_sensitive() )

@@ -8,7 +8,7 @@ This is yet another port of [garybernhardt/selecta](https://github.com/garybernh
 * highlight matching string in match list
 * (currently) prefer matches add the end of candidate 
 * switch case sensitivity for search `F2`
-* NO fuzzy search yet 
+* fuzzy search yet using Command-T select algorithm
 * status-line shows some stats about the candidates
 * resize support
 
@@ -18,13 +18,16 @@ This is yet another port of [garybernhardt/selecta](https://github.com/garybernh
 * `Home` go to the beginning match list
 * `End` go to the beginning match list
 * `F2` toggle case-sensitivity
+* `F3` switch the matcher
 * `Arrow-Up` and `Arrow-Down` for selecting string from match list 
 * `^U` Empty search term
 * `^N` alias for `Arrow-Down`
 * `^P` alias for `Arrow-Up`
 
 ### to be done 
-* fuzzy finding; currently, it only searches for the given query-string over all choices.
+* mutlithreading for `Search::get_score`; this can be done Matcher independent
+* move matcher in its own (static) library
+* ability to load matcher via a library 
 * add more key bindings, see [readline](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29#Keyboard_shortcuts)
 * `cmake` installation target
 * Improve matches/candidate handling (no copy)
@@ -45,7 +48,12 @@ mkdir clecta/build
 cd clecta/build
 cmake ..
 make
+# or use: make -j`nproc`
 ```
+### Tests
+In the build directory, use:
+* the *test* target: `make test` or
+* run the tests manually: `tests/clecta-tests`
 
 ### License
 Copyright (c) Armin Widegreen

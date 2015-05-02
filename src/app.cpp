@@ -16,7 +16,7 @@ App::App() :
 }
 //------------------------------------------------------------------------------
 
-App::App(Search* search) : 
+App::App(Search::Ptr search) : 
   _search(search)
 {
   init();
@@ -26,10 +26,8 @@ App::App(Search* search) :
 
 App::~App()
 {
-  delete _search;
-  delete _inputw;
-  delete _listw;
   delscreen(_screen);
+  delete _terminal;
 }
 
 //------------------------------------------------------------------------------
@@ -38,12 +36,11 @@ void
 App::init()
 {
   //initscr();
-  auto term = fopen("/dev/tty", "rw+");
-  _screen = newterm(NULL, term, term);
+  _terminal = fopen("/dev/tty", "rw+");
+  _screen = newterm(NULL, _terminal, _terminal);
   set_term(_screen);
   start_color();
   use_default_colors();
-
 
   init_pair(1, COLOR_WHITE, COLOR_BLUE);
   init_pair(2, COLOR_YELLOW, COLOR_BLACK);
@@ -54,9 +51,9 @@ App::init()
 
   _search->query(L"");
 
-  _inputw = new clecta::InputWindow(stdscr, _search, 1);
-  _statusw = new clecta::StatusWindow(stdscr, _search, 1);
-  _listw = new clecta::ListWindow(stdscr, _search, 2);
+  _inputw = ClectaWin::Ptr(new clecta::InputWindow(stdscr, _search, 1));
+  _statusw = ClectaWin::Ptr(new clecta::StatusWindow(stdscr, _search, 1));
+  _listw = ClectaWin::Ptr(new clecta::ListWindow(stdscr, _search, 2));
 }
 
 //------------------------------------------------------------------------------
@@ -75,15 +72,10 @@ App::run()
       return;
     }
 
-    //std::cerr << "keyname: " << c << std::endl;
-    //std::cerr << "keyname ctrl: " << CTRL(c) << std::endl;
-
     switch (c) 
     {
       //--- return key handling
-      case KEY_ENTER: 
-      case '\n': 
-      case '\r':
+      case KEY_ENTER: case '\n': case '\r':
         endwin();
         return;
       //-----
@@ -121,7 +113,7 @@ void
 App::dispatch(CLECTA_KEY key, bool is_key_code)
 {
 
-  if ( is_key_code  )
+  if ( is_key_code )
   { 
     switch (key)
     {
@@ -131,8 +123,11 @@ App::dispatch(CLECTA_KEY key, bool is_key_code)
       case KEY_END:
       case KEY_RESIZE:
         break;
-      case KEY_F(2):
+      case CLECTA_KEY_TOGGLE_CASE:
         _search->toggle_case_sensitive();
+        break;
+      case CLECTA_KEY_SWITCH_MATCHER:
+        _search->next_matcher();
         break;
       default:
         if ( is_clecta_key(key) )

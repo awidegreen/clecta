@@ -5,12 +5,12 @@
 
 using namespace clecta;
 
+
 //------------------------------------------------------------------------------
 
 Search::Search(bool case_sensitive /* false */) :
   _selected(NON_SELECTED),
-  _case_sensitive(case_sensitive),
-  _matcher(new SimpleMatcher)
+  _case_sensitive(case_sensitive) 
 { }
 
 //------------------------------------------------------------------------------
@@ -18,15 +18,13 @@ Search::Search(bool case_sensitive /* false */) :
 Search::Search(const Choices& choices, bool case_insensitive /* false */) :
   _choices(std::move(choices)),
   _selected(NON_SELECTED),
-  _case_sensitive(case_insensitive),
-  _matcher(new SimpleMatcher)
+  _case_sensitive(case_insensitive)
 { }
 
 //------------------------------------------------------------------------------
 
 Search::~Search()
 {
-  if ( _matcher ) delete _matcher;
 }
 
 //------------------------------------------------------------------------------
@@ -46,6 +44,15 @@ void
 Search::query(String term)
 {
   _matches.clear();
+
+  // no matcher selected, bail out!
+  if ( !_matcher )
+  {
+    Match m;
+    m.value = L"no matcher registered, unable to filter";
+    _matches.push_back(m);
+    return;
+  }
 
   if ( term.empty() )
   {
@@ -94,3 +101,26 @@ Search::size_choices() const
 
 //------------------------------------------------------------------------------
 
+void 
+Search::next_matcher()
+{
+  if ( _matchers.empty() || !_matcher ) return;
+
+  auto tmp = std::move(_matcher);
+  _matcher = _matchers.front();
+  _matchers.pop();
+  _matchers.push(std::move(tmp));
+}
+
+//------------------------------------------------------------------------------
+
+void 
+Search::register_matcher(Matcher::Ptr matcher)
+{
+  if ( !_matcher )
+    _matcher = matcher;
+  else
+    _matchers.push(std::move(matcher));
+}
+
+//------------------------------------------------------------------------------

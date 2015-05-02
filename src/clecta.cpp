@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 #include "app.hh"
 #include "matcher.hh"
@@ -13,6 +14,7 @@ int main()
 {
   setlocale(LC_ALL, ""); // add utf8 support!
 
+  using namespace clecta;
   clecta::Search::Choices choices;
 
   std::wstring line;
@@ -21,7 +23,9 @@ int main()
     choices.push_back(line);
   }
 
-  auto search = new clecta::Search(choices);
+  auto search = std::make_shared<clecta::Search>(choices);
+  search->register_matcher(Matcher::Ptr(new SimpleMatcher()));
+  search->register_matcher(Matcher::Ptr(new CmdTMatcher()));
 
   clecta::App app(search);
   app.run();

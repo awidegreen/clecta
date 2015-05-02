@@ -7,6 +7,13 @@ using namespace clecta;
 
 //------------------------------------------------------------------------------
 
+namespace 
+{
+  auto get_search = clecta::test::get_search<SimpleMatcher>;
+}
+
+//------------------------------------------------------------------------------
+
 TEST(SimpleMatcherTest, FilterSingleChar)
 {
   Search::Choices choices = {
@@ -16,10 +23,8 @@ TEST(SimpleMatcherTest, FilterSingleChar)
     L"welt", 
     L"bla", 
   };
-  Search search(choices);
 
-  search.query(L"b");
-
+  auto search = get_search(choices, L"b");
   auto matches = search.matches();
   EXPECT_EQ(2, matches.size());
 
@@ -41,9 +46,7 @@ TEST(SimpleMatcherTest, FilterScore)
     L"bbbfoo", 
     L"bar", 
   };
-  Search search(choices);
-
-  search.query(L"foo");
+  auto search = get_search(choices, L"foo");
 
   auto matches = search.matches();
   EXPECT_EQ(5, matches.size());
@@ -96,10 +99,7 @@ TEST(SimpleMatcherTest, FilterWithSpace)
     L"foo bar",
   };
 
-  Search search(choices);
-
-  search.query(L"is");
-
+  auto search = get_search(choices, L"is");
   auto matches = search.matches();;
 
   auto m = test::contains(matches, paul);

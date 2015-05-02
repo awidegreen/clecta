@@ -4,6 +4,7 @@
 // stl
 #include <stdexcept>
 #include <iostream> 
+#include <memory>
 
 #include <search.hh> 
 
@@ -13,14 +14,14 @@ namespace test
 {
   //----------------------------------------------------------------------------
 
-  template<class Matcher>
+  template<class T>
   Search
   get_search(const Search::Choices choices, const String& query)
   {
     Search s{choices};
-    s.matcher(new Matcher());
+    s.register_matcher(Matcher::Ptr(new T));
     s.query(query);
-    return s;
+    return std::move(s);
   }
 
   //----------------------------------------------------------------------------
