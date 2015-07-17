@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/awidegreen/clecta.svg?branch=master)](https://travis-ci.org/awidegreen/clecta)
 
-This is yet another port of [garybernhardt/selecta](https://github.com/garybernhardt/selecta) in C++ using Ncurses for the terminal window. UTF-8 is support.
+This is yet another port of [garybernhardt/selecta](https://github.com/garybernhardt/selecta) in C++ using Ncurses for the terminal window. UTF-8 is supported.
 
 ### Some features
 * highlight matching string in match list
