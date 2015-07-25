@@ -10,6 +10,7 @@ namespace clecta
 {
 
 typedef std::wstring String;
+typedef std::list<String> Choices;
 
 /**
  * Score value is dynamic where 0 is the worst!
@@ -19,6 +20,7 @@ struct Match {
   size_t begin;
   size_t end;
   String value;
+  Choices::const_iterator choice_iter;
   String str() const;
   Match() : score(0), begin(0), end(0), value(L"") { }
   explicit Match(double default_score) : 
@@ -27,7 +29,6 @@ struct Match {
 
 //------------------------------------------------------------------------------
 
-typedef std::list<String> Choices;
 typedef std::vector<Match> Matches;
 
 /**

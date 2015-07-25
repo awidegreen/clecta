@@ -55,6 +55,20 @@ Search::query(String term)
     return;
   }
 
+  if ( _previous_query_string.empty() && _chc_stack.empty() )
+    _chc_stack.push(_choices);
+
+  // char removed
+  if ( term.size() < _previous_query_string.size() )
+    _chc_stack.pop();
+
+  bool add2stack = false;
+  // char added
+  if ( term.size() > _previous_query_string.size() )
+    add2stack = true;
+
+  _previous_query_string = term;
+
   if ( term.empty() )
   {
     std::for_each(_choices.begin(), _choices.end(), [this](const String& str)
@@ -65,35 +79,23 @@ Search::query(String term)
         });
     return;
   }
-  
-  MatchFilter<Choices::const_iterator> concurrent_filter(
+
+  const auto& current_choices = _chc_stack.top();
+  MatchFilter<Choices::const_iterator> filter(
       _matcher, _case_sensitive);
-  _matches = concurrent_filter.apply(term, _choices.begin(), _choices.end());
-                              
-  //if ( !_case_sensitive )
-    //std::transform(term.begin(), term.end(), term.begin(), ::tolower);
+  //_matches = filter.get(term, _choices.begin(), _choices.end());
+  _matches = filter.get_concurrent(term, 
+      current_choices.begin(), current_choices.end());
 
-  //for ( auto& s : _choices )
-  //{
-    //auto haystack = s;
-    //if ( !_case_sensitive )
-      //std::transform(haystack.begin(), haystack.end(), haystack.begin(), ::tolower);
-
-    //// get the score for every choice based on query term
-    //auto m = _matcher->get_score(term, haystack);
-    //if ( m.score > 0.0 )
-    //{
-      //m.value = s;
-      //_matches.push_back(m);
-    //}
-  //}
-
-  //// sort all matches based on previous calculated score, via lambda
-  //std::sort(_matches.begin(), _matches.end(), 
-      //[](const Match& a, const Match& b) 
-      //{
-        //return b.score < a.score;
-      //});
+  if ( add2stack )
+  {
+    Choices chcs;
+    for ( auto& m : _matches )
+    {
+      chcs.push_back(*(m.choice_iter));
+    }
+    _chc_stack.push(chcs);
+  }
 }
 
 //------------------------------------------------------------------------------

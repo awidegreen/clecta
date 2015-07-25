@@ -4,6 +4,7 @@
 #include <queue>
 #include <vector>
 #include <list>
+#include <stack>
 #include <string>
 #include <memory>
 #include "matcher.hh"
@@ -65,6 +66,7 @@ public:
   void next_matcher();
 private:
   typedef std::queue<Matcher::Ptr> Matchers;
+  typedef std::stack<Choices> ChoicesStack;
 
   Choices _choices;
   Matches _matches;
@@ -72,6 +74,8 @@ private:
   bool _case_sensitive;
   Matcher::Ptr _matcher;
   Matchers _matchers;
+  String _previous_query_string;
+  ChoicesStack _chc_stack;
 };
 
 
