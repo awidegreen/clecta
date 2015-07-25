@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include "search.hh"
+#include "match_filter.hh"
 
 using namespace clecta;
 
@@ -64,31 +65,35 @@ Search::query(String term)
         });
     return;
   }
+  
+  MatchFilter<Choices::const_iterator> concurrent_filter(
+      _matcher, _case_sensitive);
+  _matches = concurrent_filter.apply(term, _choices.begin(), _choices.end());
                               
-  if ( !_case_sensitive )
-    std::transform(term.begin(), term.end(), term.begin(), ::tolower);
+  //if ( !_case_sensitive )
+    //std::transform(term.begin(), term.end(), term.begin(), ::tolower);
 
-  for ( auto& s : _choices )
-  {
-    auto haystack = s;
-    if ( !_case_sensitive )
-      std::transform(haystack.begin(), haystack.end(), haystack.begin(), ::tolower);
+  //for ( auto& s : _choices )
+  //{
+    //auto haystack = s;
+    //if ( !_case_sensitive )
+      //std::transform(haystack.begin(), haystack.end(), haystack.begin(), ::tolower);
 
-    // get the score for every choice based on query term
-    auto m = _matcher->get_score(term, haystack);
-    if ( m.score > 0.0 )
-    {
-      m.value = s;
-      _matches.push_back(m);
-    }
-  }
+    //// get the score for every choice based on query term
+    //auto m = _matcher->get_score(term, haystack);
+    //if ( m.score > 0.0 )
+    //{
+      //m.value = s;
+      //_matches.push_back(m);
+    //}
+  //}
 
-  // sort all matches based on previous calculated score, via lambda
-  std::sort(_matches.begin(), _matches.end(), 
-      [](const Match& a, const Match& b) 
-      {
-        return b.score < a.score;
-      });
+  //// sort all matches based on previous calculated score, via lambda
+  //std::sort(_matches.begin(), _matches.end(), 
+      //[](const Match& a, const Match& b) 
+      //{
+        //return b.score < a.score;
+      //});
 }
 
 //------------------------------------------------------------------------------

@@ -33,7 +33,7 @@ TEST(CmdTMatcherTest, GetScore)
 
 TEST(CmdTMatcherTest, EmptyMatchListWhenNoChoices)  
 {
-  Search::Choices choices = { };
+  Choices choices = { };
   auto search = get_search(choices, L"");
   EXPECT_TRUE( search.matches().empty() );
   search.query(L"foo");
@@ -44,7 +44,7 @@ TEST(CmdTMatcherTest, EmptyMatchListWhenNoChoices)
 
 TEST(CmdTMatcherTest, EmptyMatchListWhenNoMatches)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"foo/bar",
     L"foo/baz",
     L"bing",
@@ -57,7 +57,7 @@ TEST(CmdTMatcherTest, EmptyMatchListWhenNoMatches)
 
 TEST(CmdTMatcherTest, ReturnMatchingPaths)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"foo/bar",
     L"foo/baz",
     L"bing",
@@ -79,7 +79,7 @@ TEST(CmdTMatcherTest, ReturnMatchingPaths)
 
 TEST(CmdTMatcherTest, EmptyQueryMatchAll)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"foo",
   };
 
@@ -94,7 +94,7 @@ TEST(CmdTMatcherTest, EmptyQueryMatchAll)
 
 TEST(CmdTMatcherTest, DontMatchSubstrOfQuery)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"foo",
   };
 

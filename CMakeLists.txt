@@ -11,7 +11,7 @@ file(GLOB SOURCES
   )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} ncursesw)
+target_link_libraries(${PROJECT_NAME} ncursesw pthread)
 
 find_package(GTest REQUIRED)
 if (GTEST_FOUND)

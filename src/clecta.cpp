@@ -15,7 +15,7 @@ int main()
   setlocale(LC_ALL, ""); // add utf8 support!
 
   using namespace clecta;
-  clecta::Search::Choices choices;
+  clecta::Choices choices;
 
   std::wstring line;
   while ( std::getline(std::wcin, line) )

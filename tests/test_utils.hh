@@ -16,7 +16,7 @@ namespace test
 
   template<class T>
   Search
-  get_search(const Search::Choices choices, const String& query)
+  get_search(const Choices choices, const String& query)
   {
     Search s{choices};
     s.register_matcher(Matcher::Ptr(new T));
@@ -32,12 +32,12 @@ namespace test
   //----------------------------------------------------------------------------
 
   std::pair<unsigned, clecta::Match> 
-  contains(const Search::Matches& matches, const String& str);
+  contains(const Matches& matches, const String& str);
 
   //----------------------------------------------------------------------------
 
   void 
-  print(const Search::Matches& matches);
+  print(const Matches& matches);
 
   //----------------------------------------------------------------------------
   

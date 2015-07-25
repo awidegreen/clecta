@@ -14,8 +14,6 @@ namespace clecta
 class Search
 {
 public:
-  typedef std::list<String> Choices;
-  typedef std::vector<Match> Matches;
   typedef std::shared_ptr<Search> Ptr;
 
   enum { NON_SELECTED = -1 };
@@ -40,7 +38,6 @@ public:
 
   void toggle_case_sensitive() { _case_sensitive = !_case_sensitive; }
   bool case_sensitive() const { return _case_sensitive; }
-
 
   /**
    * Returns sorted list of choices which match best to the query.

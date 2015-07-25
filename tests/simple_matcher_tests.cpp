@@ -16,7 +16,7 @@ namespace
 
 TEST(SimpleMatcherTest, FilterSingleChar)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"foo", 
     L"bar", 
     L"hallo", 
@@ -38,7 +38,7 @@ TEST(SimpleMatcherTest, FilterSingleChar)
 
 TEST(SimpleMatcherTest, FilterScore)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"fooa", 
     L"fooaa", 
     L"foo", 
@@ -90,7 +90,7 @@ TEST(SimpleMatcherTest, FilterWithSpace)
   auto paul = L"Paul is not Simon";
   auto tisit = L"This is it";
 
-  Search::Choices choices = {
+  Choices choices = {
     tisit,
     L"Show it",
     L"Transit",

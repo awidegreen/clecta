@@ -16,7 +16,7 @@ clecta::test::match_at(const Search& search, size_t at)
 //------------------------------------------------------------------------------
 
 std::pair<unsigned, clecta::Match> 
-clecta::test::contains(const Search::Matches& matches, const String& str)
+clecta::test::contains(const Matches& matches, const String& str)
 {
   unsigned cnt = 1;
   for(const auto& m : matches )
@@ -32,7 +32,7 @@ clecta::test::contains(const Search::Matches& matches, const String& str)
 //------------------------------------------------------------------------------
 
 void 
-clecta::test::print(const Search::Matches& matches)
+clecta::test::print(const Matches& matches)
 {
   unsigned cnt = 1;
   for ( const auto& m : matches )

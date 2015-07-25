@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include <memory>
 
 namespace clecta
@@ -25,6 +26,9 @@ struct Match {
 };
 
 //------------------------------------------------------------------------------
+
+typedef std::list<String> Choices;
+typedef std::vector<Match> Matches;
 
 /**
  * Matcher base class

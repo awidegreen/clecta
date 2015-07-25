@@ -34,7 +34,7 @@ TEST(SearchTest, InitEmptyWithNoMatcher)
 
 TEST(SearchTest, InitWithChoices)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"foo", 
     L"bar", 
     L"hallo", 
@@ -62,7 +62,7 @@ TEST(SearchTest, InitWithChoices)
 
 TEST(SearchTest, AddChoices)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"foo", 
     L"bar", 
     L"hallo", 
@@ -97,7 +97,7 @@ TEST(SearchTest, AddChoices)
 
 TEST(SearchTest, CaseSensitive)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"show it",
     L"Transit",
     L"Hello World!",
@@ -161,7 +161,7 @@ TEST(SearchTest, CaseSensitive)
 
 TEST(SearchTest, Selection)
 {
-  Search::Choices choices = {
+  Choices choices = {
     L"foo", 
     L"bar", 
     L"hallo", 
@@ -205,7 +205,7 @@ TEST(SearchTest, Selection)
 
 TEST(SearchPerformanceTest, TestFile50kCaseInSensitive)
 {
-  Search::Choices choices;
+  Choices choices;
 
   std::wifstream file;
   file.open(TEST_FILE_50K_WORDS);
@@ -229,7 +229,7 @@ TEST(SearchPerformanceTest, TestFile50kCaseInSensitive)
 
 TEST(SearchPerformanceTest, TestFile50kCaseSensitive)
 {
-  Search::Choices choices;
+  Choices choices;
 
   std::wifstream file;
   file.open(TEST_FILE_50K_WORDS);
