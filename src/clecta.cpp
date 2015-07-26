@@ -24,8 +24,8 @@ int main()
   }
 
   auto search = std::make_shared<clecta::Search>(choices);
-  search->register_matcher(Matcher::Ptr(new SimpleMatcher()));
   search->register_matcher(Matcher::Ptr(new CmdTMatcher()));
+  search->register_matcher(Matcher::Ptr(new SimpleMatcher()));
 
   clecta::App app(search);
   app.run();
