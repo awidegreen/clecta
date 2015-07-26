@@ -13,7 +13,6 @@ In addition, I have never done anything with ncurses before.
 * highlight matching string in match list
 * switch case sensitivity for search `F2`
 * multiple matchers (Simple string matcher, CmdT matcher): `F3`
-* fuzzy search yet using Command-T select algorithm
 * status-line shows some stats about the candidates
 * resize support
 * depending on the hardware, matching algorithm is executed concurrent
@@ -32,15 +31,15 @@ In addition, I have never done anything with ncurses before.
 
 ### to be done 
 * move matcher in its own (static) library
-* ability to load matcher via a library 
+* ability to load matcher via a library (plugin)
 * add more key bindings, see [readline](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29#Keyboard_shortcuts)
 * `cmake` installation target
-* Improve matches/candidate handling (no copy)
 * make coloring adjustable (via config file)
 
 ### Examples
 
 ```
+# Use find to get a list of all files, use clecta to select the desired file which shall be opened with vim
 vim $(find . | clecta)
 ```
 
