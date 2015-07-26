@@ -69,7 +69,7 @@ TEST(CmdTMatcherTest, ReturnMatchingPaths)
   EXPECT_EQ( 6, m.begin );
   EXPECT_EQ( 6, m.end );
 
-  search.query(L"bg");
+  search = get_search(choices, L"bg");
   m = test::match_at(search,0);
   EXPECT_EQ( 0, m.begin );
   EXPECT_EQ( 3, m.end );
