@@ -16,8 +16,7 @@ using namespace clecta;
 
 void InputWindow::init()
 {
-  int max_x, max_y;
-  getmaxyx(_parent, max_y, max_x);
+  int max_x = getmaxx(_parent);
   _win = derwin(_parent, _height, max_x, 0, 0);
   keypad(_win, true);
   _cur_pos = 0;
@@ -189,8 +188,7 @@ ListWindow::draw()
 void StatusWindow::init()
 {
   _nb_choices = _search->size_choices();
-  int max_x, max_y;
-  getmaxyx(_parent, max_y, max_x);
+  int max_x = getmaxx(_parent);
   _win = derwin(_parent, _height, max_x, 1, 0);
   keypad(_win, true);
 

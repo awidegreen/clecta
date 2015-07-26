@@ -1,14 +1,25 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.0.2)
 project(clecta)
+
+set(CLECTA_VERSION "0.8")
 
 add_definitions(
     -std=c++11 
-    # Other flags
+    -Wall 
+    -pedantic 
+    -Wextra
 )
 
 file(GLOB SOURCES
   "src/*.cpp"
   )
+
+configure_file(
+  "${CMAKE_SOURCE_DIR}/cmake/config.hh.in" 
+  "${CMAKE_CURRENT_BINARY_DIR}/config.hh"
+  @ONLY
+  )
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ncursesw pthread)

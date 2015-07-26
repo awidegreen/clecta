@@ -22,6 +22,7 @@ flags = [
 '-x',
 'c++',
 '-isystem', '.',
+'-isystem', 'build',
 '-isystem', '/usr/include',
 '-isystem', '/usr/local/include',
 '-isystem', 'src',

@@ -1,0 +1,7 @@
+#ifndef CONFIG_HH_IN
+#define CONFIG_HH_IN
+
+const char* CLECTA_PROJECT_NAME="@PROJECT_NAME@";
+#define CLECTA_VERSION @CLECTA_VERSION@
+
+#endif /* CONFIG_HH_IN */
