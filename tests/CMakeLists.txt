@@ -7,6 +7,8 @@ file( GLOB SOURCES
   *.cpp 
   "../src/search.cpp"
   "../src/matcher.cpp"
+  "../src/color/parser.cpp"
+  "../src/color/color.cpp"
 )
 
 configure_file( ./test_data/words50k.txt ${CMAKE_CURRENT_BINARY_DIR} COPYONLY )
